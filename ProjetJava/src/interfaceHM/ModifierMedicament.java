@@ -37,7 +37,7 @@ public class ModifierMedicament extends JInternalFrame implements ActionListener
 	// Créé la fenêtre et tout ses composants graphiques
 	
 	public ModifierMedicament(Medicament unMedicament) {
-		setBounds(100, 100, 845, 571);
+		setBounds(0, 0, 845, 571);
 		getContentPane().setLayout(null);
 		
 		lblModifierUnMdicament = new JLabel("Modifier un M\u00E9dicament");
@@ -81,6 +81,11 @@ public class ModifierMedicament extends JInternalFrame implements ActionListener
 		btnValider.setBounds(428, 390, 91, 23);
 		getContentPane().add(btnValider);
 
+		setRootPaneCheckingEnabled(false);
+		javax.swing.plaf.InternalFrameUI ui	= this.getUI();
+		((javax.swing.plaf.basic.BasicInternalFrameUI)ui).setNorthPane(null);
+		this.setBorder(null);
+		
 	}
 	
 	// Permet l'interaction entre les composants graphiques et l'interface

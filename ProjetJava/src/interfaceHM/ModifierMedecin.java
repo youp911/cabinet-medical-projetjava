@@ -38,7 +38,7 @@ public class ModifierMedecin extends JInternalFrame implements ActionListener {
 		
 	public ModifierMedecin(Medecin unMedecin) {
 		
-			setBounds(100, 100, 769, 440);
+			setBounds(0, 0, 852, 523);
 			getContentPane().setLayout(null);
 			
 			lblNumeroDordre = new JLabel("Num\u00E9ro d'ordre : ");
@@ -110,6 +110,10 @@ public class ModifierMedecin extends JInternalFrame implements ActionListener {
 			lblNumOrdre.setBounds(190, 87, 114, 14);
 			getContentPane().add(lblNumOrdre);
 
+			setRootPaneCheckingEnabled(false);
+			javax.swing.plaf.InternalFrameUI ui	= this.getUI();
+			((javax.swing.plaf.basic.BasicInternalFrameUI)ui).setNorthPane(null);
+			this.setBorder(null);
 		}
 	
 	// Permet l'interaction entre les composants graphiques et l'interface

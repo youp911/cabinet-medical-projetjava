@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -17,16 +18,11 @@ import javax.swing.table.DefaultTableModel;
 import metier.Consultation;
 import metier.Medicament;
 import metier.Ordonnance;
-import dao.DaoConsultation;
 import dao.DaoMedicament;
 import dao.DaoOrdonnance;
 
-import javax.swing.JComboBox;
+public class GererLesOrdonnances extends JInternalFrame implements ActionListener {
 
-//AjoutOrdonnance permet l'affichage de l'IHM d'ajout d'une ordonnance
-
-public class AjoutOrdonnance extends JInternalFrame implements ActionListener {
-	
 	private JLabel lblOrdonnance;
 	private JTable lstConsultation;
 	private Object[][] lignes;
@@ -36,21 +32,37 @@ public class AjoutOrdonnance extends JInternalFrame implements ActionListener {
 	private JScrollPane scrollPane_1;
 	private static DefaultTableModel dtm;
 	private JButton btnSupprimer;
-	private JButton btnModifier;
 	private JButton btnAnnuler;
 	private JButton btnAjouter;
 	private JComboBox comboBox;
 	private Consultation laConsultation;
 	
-// Créé la fenêtre et tout ses composants graphiques
-	
-	public AjoutOrdonnance(Consultation uneConsultation) {
-		setBounds(100, 100, 852, 523);
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					GererLesOrdonnances frame = new GererLesOrdonnances(null);
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public GererLesOrdonnances(Consultation uneConsultation) {
+		setBounds(0, 0, 826, 523);
 		getContentPane().setLayout(null);
 		
 		lblOrdonnance = new JLabel("Ordonnance");
 		lblOrdonnance.setFont(new Font("Tahoma", Font.BOLD, 28));
-		lblOrdonnance.setBounds(336, 44, 259, 64);
+		lblOrdonnance.setBounds(336, 44, 368, 64);
 		getContentPane().add(lblOrdonnance);
 		
 		laConsultation = uneConsultation;
@@ -61,14 +73,14 @@ public class AjoutOrdonnance extends JInternalFrame implements ActionListener {
 		//Creation d'un JScrollPane pour obtenir les titres du JTable
 		this.scrollPane_1 = new JScrollPane(this.table,ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 	    	     ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-		this.scrollPane_1.setBounds(34, 168, 788, 242);
+		this.scrollPane_1.setBounds(34, 168, 747, 242);
 		
 		getContentPane().add(this.scrollPane_1);
 		
-		btnModifier = new JButton("Modifier");
-		btnModifier.addActionListener(this);
-		btnModifier.setBounds(357, 421, 91, 23);
-		getContentPane().add(btnModifier);
+		btnSupprimer = new JButton("Supprimer");
+		btnSupprimer.addActionListener(this);
+		btnSupprimer.setBounds(357, 421, 91, 23);
+		getContentPane().add(btnSupprimer);
 		
 		btnAnnuler = new JButton("Annuler");
 		btnAnnuler.addActionListener(this);
@@ -96,6 +108,10 @@ public class AjoutOrdonnance extends JInternalFrame implements ActionListener {
 		
 		//Met à jour le JTable
 		updateTable();
+		for(Ordonnance uneOrdonnance : DaoOrdonnance.getLesOrdonnancesDUneConsultation(uneConsultation))
+		{
+		GererLesOrdonnances.ajoutOrdonnanceTableau(uneOrdonnance);
+		}
 	}
 	
 	// Permet de mettre à jour la liste des médicaments d'une ordonnance (JTab)
@@ -128,8 +144,16 @@ public class AjoutOrdonnance extends JInternalFrame implements ActionListener {
 	
 	public static void ajoutPrescriptionTableau(Medicament unMedicament)
 	{
-		/* ajout d'une nouvelle ligne au tableau des Médecins */
+		/* ajout d'une nouvelle ligne au tableau des Ordonnances avec un médicament */
 		dtm.addRow(new Object[]{unMedicament.getNomMedicament(), unMedicament.getDescriptionMedicament(), null}); 
+		table.setModel(dtm);
+	}
+	
+	
+	public static void ajoutOrdonnanceTableau(Ordonnance uneOrdonnance)
+	{
+		/* ajout d'une nouvelle ligne au tableau des Ordonnances mais cette fois avec une ordonnance */
+		dtm.addRow(new Object[]{uneOrdonnance.getUnMedicament().getNomMedicament(), uneOrdonnance.getUnMedicament().getDescriptionMedicament(), uneOrdonnance.getUnePosologie()}); 
 		table.setModel(dtm);
 	}
 
@@ -141,29 +165,50 @@ public class AjoutOrdonnance extends JInternalFrame implements ActionListener {
 		if(evt.getSource()==btnAjouter)
 		{
 			Medicament unMedicament = (Medicament)comboBox.getSelectedItem();
-			AjoutOrdonnance.ajoutPrescriptionTableau(unMedicament);
+			GererLesOrdonnances.ajoutPrescriptionTableau(unMedicament);
 			
 		}
 		
 		if(evt.getSource()==btnAnnuler)
 		{
 			dispose(); 
-			FenetreMenu.contentPane.removeAll();
-			AjoutConsultation fAjoutConsultation;
-			fAjoutConsultation = new AjoutConsultation();
-			getContentPane().add( fAjoutConsultation);
-			fAjoutConsultation.setVisible(true);
+			getContentPane().removeAll();
+			ModifierConsultation fModifierConsultation;
+			fModifierConsultation = new ModifierConsultation(laConsultation);
+			getContentPane().add( fModifierConsultation);
+			fModifierConsultation.setVisible(true);
 		}
 		if(evt.getSource() == btnValider)
 		{
-			int b;
+			int b = 0;
+			
 			for (b = 0; b<table.getRowCount(); b++)
 			{
 				Ordonnance uneOrdonnance = new Ordonnance(DaoMedicament.TrouverUnMedocAvecSonNom((String)table.getValueAt(b, 0)), laConsultation,(String)table.getValueAt(b, 2));
+				
+				//Supprime l'ordonnance pour éviter de créer un problème avec les clé primaire
+				DaoOrdonnance.supprimerUneOrdonnance(uneOrdonnance);
+				//Ajoute l'ordonnance à la base de données
 				DaoOrdonnance.AjouterUneOrdonnance(uneOrdonnance);
 			}
 		}
-		
+		if(evt.getSource() == btnSupprimer)
+		{
+			int b = table.getSelectedRow();
+			String leNom = (String)table.getValueAt(b, 0);
+			Ordonnance uneOrdonnance = new Ordonnance(DaoMedicament.TrouverUnMedocAvecSonNom((String)table.getValueAt(table.getSelectedRow(), 0)), laConsultation,(String)table.getValueAt(table.getSelectedRow(), 2));
+			
+			//Supprime l'ordonnance
+			DaoOrdonnance.supprimerUneOrdonnance(uneOrdonnance);
+			
+			//rafraichi la page pour afficher les ordonnances non supprimer
+			getContentPane().removeAll();
+			GererLesOrdonnances fGererLesOrdonnances;
+			fGererLesOrdonnances = new GererLesOrdonnances(laConsultation);
+			getContentPane().add(fGererLesOrdonnances);
+			fGererLesOrdonnances.setVisible(true);
+		}
 	}
 }
+
 

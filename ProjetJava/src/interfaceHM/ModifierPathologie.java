@@ -1,6 +1,5 @@
 package interfaceHM;
 
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,11 +10,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import dao.DaoMedecin;
-import dao.DaoPathologie;
-
-import metier.Medecin;
 import metier.Pathologie;
+import dao.DaoPathologie;
 
 //ModifierPathologie permet d'afficher l'IHM de modification d'une pathologie (après l'avoir sélectionné dans la liste des pathologie de GererPathologies.Java)
 
@@ -77,10 +73,10 @@ public class ModifierPathologie extends JInternalFrame implements ActionListener
 		{
 			dispose(); 
 			FenetreMenu.contentPane.removeAll();
-			GererMedecins fGererMedecin;
-	    	fGererMedecin = new GererMedecins();
-	    	FenetreMenu.contentPane.add(fGererMedecin);
-	    	fGererMedecin.setVisible(true);
+			GererPathologies fGererPathologies;
+	    	fGererPathologies = new GererPathologies();
+	    	FenetreMenu.contentPane.add(fGererPathologies);
+	    	fGererPathologies.setVisible(true);
 		}
 		if ( evt.getSource() == this.btnValider)
 		{

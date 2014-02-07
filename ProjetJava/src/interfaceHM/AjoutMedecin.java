@@ -110,6 +110,10 @@ public class AjoutMedecin extends JInternalFrame implements ActionListener {
 		btnAnnuler.setBounds(462, 342, 91, 23);
 		getContentPane().add(btnAnnuler);
 
+		setRootPaneCheckingEnabled(false);
+		javax.swing.plaf.InternalFrameUI ui	= this.getUI();
+		((javax.swing.plaf.basic.BasicInternalFrameUI)ui).setNorthPane(null);
+		this.setBorder(null);
 	}
 	
 // Permet l'interaction entre les composants graphiques et l'interface

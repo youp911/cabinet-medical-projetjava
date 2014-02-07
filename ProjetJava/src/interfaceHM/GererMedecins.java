@@ -83,6 +83,12 @@ public class GererMedecins extends JInternalFrame implements ActionListener {
 		{
 			this.ajoutMedecinTableau(unMedecin);
 		}
+		
+		setRootPaneCheckingEnabled(false);
+		javax.swing.plaf.InternalFrameUI ui	= this.getUI();
+		((javax.swing.plaf.basic.BasicInternalFrameUI)ui).setNorthPane(null);
+		this.setBorder(null);setRootPaneCheckingEnabled(false);
+		
 	}
 	
 	// Permet de mettre à jour la liste des médecins (JTab)

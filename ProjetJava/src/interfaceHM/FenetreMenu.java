@@ -161,6 +161,8 @@ public class FenetreMenu extends JFrame implements ActionListener {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		
+	
 	}
 		
 	// actionPerformed va permettre de définir des interaction entre les composants et l'application (par exemple, les boutons valider, modifier...)
@@ -255,10 +257,10 @@ public class FenetreMenu extends JFrame implements ActionListener {
 		if(evt.getSource()== this.mntmGererLesConsultations)
 		{
 			contentPane.removeAll();
-			GererMedicament fGererMedicament;
-			fGererMedicament = new GererMedicament();
-			contentPane.add(fGererMedicament);
-			fGererMedicament.setVisible(true);
+			GererConsultations fGererConsultations;
+			fGererConsultations = new GererConsultations();
+			contentPane.add(fGererConsultations);
+			fGererConsultations.setVisible(true);
 		}
 		
 		// Interaction sur le sous-menu "AjoutConsultation" du menu "Consultation"
@@ -271,5 +273,13 @@ public class FenetreMenu extends JFrame implements ActionListener {
 			contentPane.add( fAjoutConsultation);
 			fAjoutConsultation.setVisible(true);
 		}	
+		if(evt.getSource()==this.mntmNouveauMedicament)
+		{
+			contentPane.removeAll();
+			AjoutMedicament fAjoutMedicament;
+			fAjoutMedicament = new AjoutMedicament();
+			contentPane.add( fAjoutMedicament);
+			fAjoutMedicament.setVisible(true);
+		}
 	}
 }

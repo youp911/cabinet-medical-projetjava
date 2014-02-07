@@ -55,7 +55,6 @@ public class GererConsultations extends JInternalFrame implements ActionListener
 	// Créé la fenêtre et tout ses composants graphiques
 	
 	public GererConsultations() {
-		setBounds(100, 100, 450, 300);
 		setBounds(100, 100, 852, 523);
 		getContentPane().setLayout(null);
 		lblNewLabel = new JLabel("Gerer les Consultations");
@@ -83,6 +82,11 @@ public class GererConsultations extends JInternalFrame implements ActionListener
 		btnAnnuler.addActionListener(this);
 		btnAnnuler.setBounds(216, 421, 91, 23);
 		getContentPane().add(btnAnnuler);
+		
+		setRootPaneCheckingEnabled(false);
+		javax.swing.plaf.InternalFrameUI ui	= this.getUI();
+		((javax.swing.plaf.basic.BasicInternalFrameUI)ui).setNorthPane(null);
+		this.setBorder(null);
 		
 		//Met à jour le JTable
 		updateTable();
@@ -138,13 +142,12 @@ public class GererConsultations extends JInternalFrame implements ActionListener
 		if ( evt.getSource() == this.btnModifier)
 		{
 			int ligne = table.getSelectedRow();//Si tu veut la ligne selectionnée
-			//Consultation c = new Consultation((String)table.getValueAt(ligne, 0),(String)table.getValueAt(ligne, 1),(String)table.getValueAt(ligne, 2),
-			//		(String)table.getValueAt(ligne, 3),(String)table.getValueAt(ligne, 4),(String)table.getValueAt(ligne, 5));
-			//getContentPane().removeAll();
-			//ModifierMedecin fModifierMedecin;
-			//fModifierMedecin = new ModifierMedecin(m);
-	    	//getContentPane().add(fModifierMedecin);
-	    	//fModifierMedecin.setVisible(true);
+			Consultation c = DaoConsultation.RetrouverUneConsultAvecSonNum((Integer)table.getValueAt(ligne, 0));
+			getContentPane().removeAll();
+			ModifierConsultation fModifierConsultation;
+			fModifierConsultation = new ModifierConsultation(c);
+	    	getContentPane().add(fModifierConsultation);
+	    	fModifierConsultation.setVisible(true);
 		}
 		
 			

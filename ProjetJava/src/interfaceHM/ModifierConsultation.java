@@ -10,14 +10,21 @@ import javax.swing.JComboBox;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
-import metier.*;
-import dao.*;
+import metier.Consultation;
+import metier.Medecin;
+import metier.Pathologie;
+import metier.Patient;
 
-// AjoutConsultation permet d'afficher l'interface d'ajout de consultation
+import dao.DaoConsultation;
+import dao.DaoMedecin;
+import dao.DaoPathologie;
+import dao.DaoPatient;
 
-public class AjoutConsultation extends JInternalFrame implements ActionListener {
+public class ModifierConsultation extends JInternalFrame implements ActionListener {
 	private JLabel lblAjoutDuneConsultation;
 	private JLabel lblVeulliezChoisirUn;
 	private JComboBox cbMedecin;
@@ -33,14 +40,18 @@ public class AjoutConsultation extends JInternalFrame implements ActionListener 
 	private JTextField txtHeure;
 	private JButton btnAnnuler;
 	private JButton btnValider;
-
-// Lance l'application
-	
+	private JLabel lblNumroDeLa_1;
+	private JLabel lblNumero;
+	private JButton btnGererLesOrdonnances;
+	private Consultation uneConsultation;
+	/**
+	 * Launch the application.
+	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					AjoutConsultation frame = new AjoutConsultation();
+					ModifierConsultation frame = new ModifierConsultation(null);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -49,17 +60,22 @@ public class AjoutConsultation extends JInternalFrame implements ActionListener 
 		});
 	}
 
-
-// Créé la fenêtre avec tout ses composants graphiques
-	
-	@SuppressWarnings("unchecked")
-	public AjoutConsultation() {
-		setBounds(100, 100, 828, 572);
+	/**
+	 * Create the frame.
+	 * @param c 
+	 */
+	public ModifierConsultation(Consultation c) {
+		// On renseigne l'attribut privé uneConsultation par
+		// l'attribut passé en paramètre c pour pouvoir s'en 
+		// servir dans la gestion d'événement
+		uneConsultation = c;
+		setBounds(0, 0, 852, 523);
 		getContentPane().setLayout(null);
 		
-		lblAjoutDuneConsultation = new JLabel("Ajout d'une Consultation");
+		
+		lblAjoutDuneConsultation = new JLabel("Modification d'une Consultation");
 		lblAjoutDuneConsultation.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblAjoutDuneConsultation.setBounds(257, 29, 245, 85);
+		lblAjoutDuneConsultation.setBounds(212, 28, 390, 85);
 		getContentPane().add(lblAjoutDuneConsultation);
 		
 		lblVeulliezChoisirUn = new JLabel("Veulliez choisir un Medecin : ");
@@ -90,7 +106,7 @@ public class AjoutConsultation extends JInternalFrame implements ActionListener 
 		lblDate.setBounds(238, 395, 46, 14);
 		getContentPane().add(lblDate);
 		
-		txtDate = new JTextField();
+		txtDate = new JTextField(c.getDateConsultat());
 		txtDate.setBounds(416, 392, 86, 20);
 		getContentPane().add(txtDate);
 		txtDate.setColumns(10);
@@ -99,7 +115,7 @@ public class AjoutConsultation extends JInternalFrame implements ActionListener 
 		lblHeure.setBounds(238, 420, 46, 14);
 		getContentPane().add(lblHeure);
 		
-		txtHeure = new JTextField();
+		txtHeure = new JTextField(String.valueOf(c.getHeureConsultat()));
 		txtHeure.setBounds(416, 414, 86, 20);
 		getContentPane().add(txtHeure);
 		txtHeure.setColumns(10);
@@ -114,15 +130,26 @@ public class AjoutConsultation extends JInternalFrame implements ActionListener 
 		btnValider.setBounds(381, 460, 91, 23);
 		getContentPane().add(btnValider);
 		
+		lblNumroDeLa_1 = new JLabel("Num\u00E9ro de la consultation : ");
+		lblNumroDeLa_1.setBounds(238, 116, 152, 14);
+		getContentPane().add(lblNumroDeLa_1);
+		
+		lblNumero = new JLabel(String.valueOf(c.getNumConsultat()));
+		lblNumero.setBounds(416, 116, 46, 14);
+		getContentPane().add(lblNumero);
+		
+		btnGererLesOrdonnances = new JButton("Gerer les Ordonnances");
+		btnGererLesOrdonnances.addActionListener(this);
+		btnGererLesOrdonnances.setBounds(497, 460, 167, 23);
+		getContentPane().add(btnGererLesOrdonnances);
+		
 		setRootPaneCheckingEnabled(false);
 		javax.swing.plaf.InternalFrameUI ui	= this.getUI();
 		((javax.swing.plaf.basic.BasicInternalFrameUI)ui).setNorthPane(null);
 		this.setBorder(null);
-
+		
 	}
-	
-// Permet l'interaction entre les composants graphiques et l'interface
-	
+
 	public void actionPerformed(ActionEvent evt) 
 	{
 		if (evt.getSource() == this.btnAnnuler)
@@ -137,21 +164,23 @@ public class AjoutConsultation extends JInternalFrame implements ActionListener 
 				else
 				{
 					getContentPane().removeAll();
-					Consultation uneConsultation;
-					uneConsultation= new Consultation (null,(Pathologie)this.cbPathologie.getSelectedItem(),
+					//On créer la consulation avec 
+					
+					uneConsultation= new Consultation (uneConsultation.getNumConsultat(),(Pathologie)this.cbPathologie.getSelectedItem(),
 							(Patient)this.cbPatient.getSelectedItem(),
 							(Medecin)this.cbMedecin.getSelectedItem(),
 							this.txtDate.getText(),
 							Integer.valueOf(this.txtHeure.getText()));
-					DaoConsultation.AjouterUneConsultation(uneConsultation);
-					getContentPane().removeAll();
-					AjoutOrdonnance fAjoutOrdonnance;
-					fAjoutOrdonnance = new AjoutOrdonnance(uneConsultation);
-					getContentPane().add(fAjoutOrdonnance);
-					fAjoutOrdonnance.setVisible(true);
-					
+					DaoConsultation.ModifierUneConsultation(uneConsultation);
 				}
-			}	
+			}
+		if(evt.getSource() == this.btnGererLesOrdonnances)
+		{
+			getContentPane().removeAll();
+			GererLesOrdonnances fGererLesOrdonnances;
+			fGererLesOrdonnances = new GererLesOrdonnances(uneConsultation);
+			getContentPane().add(fGererLesOrdonnances);
+			fGererLesOrdonnances.setVisible(true);
+		}
 	}
 }
-

@@ -85,6 +85,10 @@ public class AjoutMedicament extends JInternalFrame implements ActionListener {
 		btnValider.setBounds(433, 360, 91, 23);
 		getContentPane().add(btnValider);
 
+		setRootPaneCheckingEnabled(false);
+		javax.swing.plaf.InternalFrameUI ui	= this.getUI();
+		((javax.swing.plaf.basic.BasicInternalFrameUI)ui).setNorthPane(null);
+		this.setBorder(null);
 	}
 	
 // Permet l'interaction entre les composants graphiques et l'interface
@@ -105,7 +109,7 @@ public class AjoutMedicament extends JInternalFrame implements ActionListener {
 				Medicament unMedicament;
 				unMedicament= new Medicament (null,this.txtNom.getText(),this.txtDescription.getText());
 				DaoMedicament.AjouterUnMedicament(unMedicament);
-				JOptionPane.showMessageDialog(null, "Medecin ajoutée.");
+				JOptionPane.showMessageDialog(null, "Medicament ajoutée.");
 			}
 		}
 	}

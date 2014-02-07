@@ -49,6 +49,7 @@ public class DaoMedicament
 			stLienBd = MySQLConnection.getConnection("projetjava", "root", "").createStatement();
 			
 			String requete = "INSERT INTO Medicament values("+ null +",'"+unMedicament.getNomMedicament()+"','"+unMedicament.getDescriptionMedicament()+"')";
+			System.out.println(requete);
 			resultat = stLienBd.executeUpdate(requete);
 			MySQLConnection.getConnection("projetjava", "root", "").close();
 		}
@@ -81,23 +82,30 @@ public class DaoMedicament
 		}		
 		return res;
 	}
-	public static boolean SupprimerUnMedicament(Medicament uneMedicament)
+
+	public static Medicament TrouverUnMedocAvecSonNom (String leNom)
 	{
 		boolean res=false;
 		Statement stLienBd;
-		int resultat;
+		ResultSet resultat = null;
+		Medicament unMedicament = null;
 		try
 		{
 			stLienBd = MySQLConnection.getConnection("projetjava", "root", "").createStatement();
-			String requete = "DELETE FROM Medicament where numordreMedicament = '" + uneMedicament.getNumMedicament() +"'";
-			resultat = stLienBd.executeUpdate(requete);
+			String requete = "Select * from Medicament where nomMedicament = '" + leNom +"'";
+			resultat = stLienBd.executeQuery(requete);
 			System.out.println(requete);
+			while (resultat.next())
+			{
+				unMedicament = new Medicament(resultat.getInt(1),resultat.getString(2), resultat.getString(3));
+			}
+			
 			MySQLConnection.getConnection("projetjava", "root", "").close();
 		}
 		catch(SQLException e)
 		{
 			System.out.println("Problème lors de la connexion à la base de données " + e.getMessage());
 		}		
-		return res;
+		return unMedicament;
 	}
 }

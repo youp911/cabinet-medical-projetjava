@@ -90,6 +90,11 @@ public class GererMedicament extends JInternalFrame implements ActionListener{
 				{
 					GererMedicament.ajoutPatientTableau(unMedicament);
 				}
+				
+				setRootPaneCheckingEnabled(false);
+				javax.swing.plaf.InternalFrameUI ui	= this.getUI();
+				((javax.swing.plaf.basic.BasicInternalFrameUI)ui).setNorthPane(null);
+				this.setBorder(null);
 			}
 	
 	// Permet de mettre à jour la liste des médicaments (JTab)
